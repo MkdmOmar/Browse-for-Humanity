@@ -7,10 +7,10 @@ $(document).ready(function(e) {
 		if (isValid && text != "") {
 			$("#job_field").val('')
 			$("#selectedJobs").append(
-				"<div class='container-fluid'>" + 
-					"<blockquote><p style='float:left'>" + text + 
-					"<button class='btn-xs removeButton'>x</button>" + 
-					"</p></blockquote>" + 
+				"<div class='container-fluid'>" +
+					"<blockquote><p style='float:left'>" + text +
+					"<button class='btn-xs removeButton'>x</button>" +
+					"</p></blockquote>" +
 				"</div>")
 			newJob = JSON.parse(text)
 			jobsAdded[text] = newJob
