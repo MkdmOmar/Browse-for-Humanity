@@ -7,7 +7,8 @@ app.config.update(
     DEBUG=True,
     TEMPLATES_AUTO_RELOAD=True,
     SECRET_KEY = os.urandom(24),  # Secret key for app session
-    UPLOAD_FOLDER = '/upload'
+    UPLOAD_FOLDER = '/upload',
+    SEND_FILE_MAX_AGE_DEFAULT = 0
 )
 
 
