@@ -6,16 +6,20 @@ app = Flask(__name__)
 @app.route("/")
 def login():
     print("logged in!")
-    return render_template('login.html')
+    return render_template('login.html', disp = '')
 
 # If login success route to index.html. Else, return to login page.
 @app.route('/checkLogin', methods = ['POST', 'GET'])
 def checkLogin():
     print("checkLogin")
     if request.method == 'POST' and request.form['username'] == 'admin' and request.form['password'] == 'password':
-        return render_template('index.html')
-    return redirect(url_for('login'))
+        return redirect(url_for('main'))
+    return render_template('login.html', disp = 'Error logging in. Please try again!')
+
+@app.route("/main")
+def main():
+    return render_template('index.html')
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
