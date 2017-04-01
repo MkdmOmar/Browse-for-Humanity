@@ -1,34 +1,42 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<title></title>
+	<title>Login</title>
 </head>
+
 <body>
 
-<div id="loginError" style = display: block;> {{ disp }} </div>
-  <div class="wrapper">
-    <form action = "http://localhost:5000/checkLogin" method = "POST" role="form" class="form-signin">
-      <h2 class="form-signin-heading">Login</h2>
-      <input type="text" class="form-control" name="username" placeholder="Email Address" required="" autofocus="" />
-      <input type="password" class="form-control" name="password" placeholder="Password" required=""/>
-      <hr>
+	<!-- Include JQuery -->
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+	<!-- Include Bootstrap CSS -->
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<!-- Include Bootstrap JS -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<script src="{{ url_for('static', filename='login.js') }}"></script>
+
+
+	<div class="container">
+		<form action="http://localhost:5000/checkLogin" method="POST" role="form" class="form-signin">
+			<h2 class="form-signin-heading">Login</h2>
+			<input type="text" class="form-control" name="username" placeholder="Email Address" required="" autofocus="" />
+			<input type="password" class="form-control" name="password" placeholder="Password" required="" />
+			<hr>
 			<input id="submit" name="submit" type="submit" value="Login" class="btn btn-primary">
-    </form>
-  </div>
+		</form>
 
-<!-- Include JQuery -->
-<script
-  src="https://code.jquery.com/jquery-3.2.1.min.js"
-  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-  crossorigin="anonymous"></script>
+		{% if error %}
+		<p class="error"><strong>Error:</strong> {{ error }}</p>
+		{% endif %}
 
-<!-- Include Bootstrap CSS -->
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<!-- messages -->
+		{% for message in get_flashed_messages() %}
+		{{ message }}
+		{% endfor %}
+	</div>
 
-<!-- Include Bootstrap JS -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-<!-- <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='style.css') }}"> -->
-<script src="{{ url_for('static', filename='login.js') }}"></script>
 </body>
 </html>
