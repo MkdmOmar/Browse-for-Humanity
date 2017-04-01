@@ -3,6 +3,8 @@
 
 <head>
 	<title>CreateJob</title>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
 </head>
 
 <body>
@@ -14,38 +16,41 @@
 	<p>Click <a href="/logout">here</a> to logout.</p>
 
 	<div class="col-lg-4"></div>
-	<form class="col-lg-4">
+	<form class="col-lg-4" id="submitJob" method="POST" enctype="multipart/form-data">
 		<h1 class="display-4">Distributed Task Code</h1>
 		<div class="form-group">
-			<textarea class="form-control" rows="3" placeholder="Paste your javascript here"></textarea>
+			<textarea name="typedCode" class="form-control" rows="3" placeholder="Paste your javascript here"></textarea>
 		</div>
 		<div class="form-group">
-			<label for="exampleInputFile">File input</label>
-			<input type="file" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
-			<small id="fileHelp" class="form-text text-muted">Insert a function that executes the task in a distributed fashion.</small>
-		</div>
-		<hr>
+	    	<label for="exampleInputFile">File input</label>
+	    	<input name="fileCode" type="file" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
+	    	<small id="fileHelp" class="form-text text-muted">Insert a function that executes the task in a distributed fashion.</small>
+	  	</div>
+		<!-- <hr>
 		<h1 class="display-4">Assign Task Code</h1>
-		<textarea class="form-control" rows="3" placeholder="Ex: getJob(i, j, A, B)"></textarea>
+		<textarea name="getJob" class="form-control" rows="3" placeholder="Ex: getJob(i, j, A, B)"></textarea>
 		<div class="form-group">
-			<label for="exampleInputFile">File input</label>
-			<input type="file" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
-			<small id="fileHelp" class="form-text text-muted">Insert a function that assigns a job according to your distributed task.</small>
-		</div>
+	    	<label for="exampleInputFile">File input</label>
+	    	<input type="file" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
+	    	<small id="fileHelp" class="form-text text-muted">Insert a function that assigns a job according to your distributed task.</small>
+	  	</div> -->
 		<!-- allow copying of tasks but with increasing /decreasing bounds for convenience -->
 		<hr>
-		<div id="jobs_field">
-			<!-- div for jobs -->
+		<div id="jobs_field"> <!-- div for jobs -->
 			<div id="selectedJobs"></div>
-		</div>
-		<div class="form-group">
-			<h1 class="display-4" style="float:left; padding-right: 20px">Jobs</h1>
-			<p style="display:none;" id="jsonPopup">Data should be in JSON format corresponding to your getJob function.</p>
-			<input placeholder="Ex: {i = 100000, j = 100000, A = matrixA, B = matrixB}" class="form-control" id="job_field" />
-		</div>
-		<div class="form-group">
-			<button href="#" id="createJob">Create new Job</button>
-		</div>
+			</div>
+			<div class="form-group">
+	    		<h1 class="display-4" style="float:left; padding-right: 20px">Jobs</h1> <p style="display:none;" id="jsonPopup">Data should be in JSON format corresponding to your getJob function.</p>
+	    		<input placeholder="Ex: {i = 100000, j = 100000, A = matrixA, B = matrixB}" class="form-control" id="job_field"/>
+	  		</div>
+	  		<div class="form-group">
+	  			<button href="#" id ="createJob">Create new Job</button>
+	  		</div>
+	  		<div class="form-group">
+	  			<label for="exampleInputFile">File input</label>
+	    		<input name="tasksFile" type="file" class="form-control-file" id="tasksFile" aria-describedby="fileHelp">
+	    		<small id="fileHelp" class="form-text text-muted">Or submit a file where each 	line is a task with JSON formatted inputs to your function</small>
+	    	</div>
 		</div>
 
 		<div class="col-xs-3"></div>
@@ -53,12 +58,15 @@
 		<div class="col-xs-3"></div>
 
 		<!-- <h1 class="display-4">Schedule Jobs (Params for Tasks)</h1>
-	<input type="text" placeholder="Ex: {i = 100000, j = 100000, A = matrixA, B = matrixB}"></form> -->
+		<input type="text" placeholder="Ex: {i = 100000, j = 100000, A = matrixA, B = matrixB}"></form> -->
 	</form>
 	<div class="col-lg-4"></div>
 
 	<!-- Include JQuery -->
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+	<script
+	  src="https://code.jquery.com/jquery-3.2.1.min.js"
+	  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	  crossorigin="anonymous"></script>
 
 	<!-- Include Bootstrap CSS -->
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -68,6 +76,5 @@
 
 	<script src="{{ url_for('static', filename='main.js') }}"></script>
 
-</body>
-
-</html>
+	</body>
+	</html>

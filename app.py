@@ -6,7 +6,8 @@ app = Flask(__name__)
 app.config.update(
     DEBUG=True,
     TEMPLATES_AUTO_RELOAD=True,
-    SECRET_KEY = os.urandom(24)  # Secret key for app session
+    SECRET_KEY = os.urandom(24),  # Secret key for app session
+    UPLOAD_FOLDER = '/upload'
 )
 
 
@@ -37,12 +38,43 @@ def checkLogin():
         else:
             return render_template('login.html', error = 'Invalid credentials. Please try again!')
 
-#
+
+# Create a job to be run on workers
 @app.route("/createJob")
 @login_required
 def createJob():
     return render_template('createJob.html')
 
+
+
+@app.route("/accept", methods = ['POST', 'GET'])
+def accept():
+    print("here")
+    if request.method == 'POST':
+        print("accepted")
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No seleted file')
+            return redirect(request.url)
+        if file:
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('uploaded_file', filename=filename))
+    return '''
+    <!doctype html>
+    <title>Upload new File</title>
+    <h1>Upload new File</h1>
+    <form method=post enctype=multipart/form-data>
+      <p><input type=file name=file>
+         <input type=submit value=Upload>
+    </form>
+    '''
+
+
+# Logout of session
 @app.route("/logout")
 @login_required
 def logout():
