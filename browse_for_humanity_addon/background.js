@@ -1,5 +1,33 @@
 var SERVER_URL = "http://198.74.58.111";
 var busy = false;
+// LZW-compress a string
+function lzw_encode(s) {
+    var dict = {};
+    var data = (s + "").split("");
+    var out = [];
+    var currChar;
+    var phrase = data[0];
+    var code = 256;
+    for (var i=1; i<data.length; i++) {
+        currChar=data[i];
+        if (dict[phrase + currChar] != null) {
+            phrase += currChar;
+        }
+        else {
+            out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0));
+            dict[phrase + currChar] = code;
+            code++;
+            phrase=currChar;
+        }
+    }
+    out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0));
+    for (var i=0; i<out.length; i++) {
+        out[i] = String.fromCharCode(out[i]);
+    }
+    return out.join("");
+}
+
+
 
 (function(){
    if (!busy) {
@@ -13,13 +41,15 @@ var busy = false;
     	xhr.onreadystatechange = function() {
             if (xhr.readyState == 4) {
                 if (xhr.responseText !== "X_X") {
-                    busy = true
+                    
+                    console.log(xhr.responseText)
                     var task = JSON.parse(xhr.responseText)
-            		console.log(task.code)
+            		    console.log(task.code)
                     console.log(task.params)
                     
-                    results = eval(task.code); 
-                    results = doWork(task.inputs);
+                    results = eval(task.code);
+                    busy = true 
+                    results = lzw_encode(doWork(task.inputs));
                     console.log(results)
                     
                     var xhr2 = new XMLHttpRequest();
@@ -49,29 +79,13 @@ var busy = false;
 })();
 
 
-function MonteCarlo(dims, steps) {
-    var data = [183, 192, 182, 183, 177, 185, 188, 188, 182, 185,183, 192, 182, 183, 177, 185, 188, 188, 182, 185,183, 192, 182, 183, 177, 185, 188, 188, 182, 185,183, 192, 182, 183, 177, 185, 188, 188, 182, 185];
 
-    var params = {
-      mu: {type: "real"},
-      sigma: {type: "real", lower: 0} };
 
-    var log_post = function(state, data) {
-      var log_post = 0;
-      // Priors
-      log_post += ld.norm(state.mu, 0, 100);
-      log_post += ld.unif(state.sigma, 0, 100);
-      // Likelihood
-      for(var i = 0; i < data.length; i++) {
-        log_post += ld.norm(data[i], state.mu, state.sigma);
-      }
-      return log_post;
-    };
-
-    // Initializing the sampler
-    var sampler =  new mcmc.AmwgSampler(params, log_post, data);
-    // Burning some samples to the MCMC gods and sampling 5000 draws.
-    sampler.burn(1000)
-    var samples = sampler.sample(50000)
+function MonteCarlo(N, steps) {
+    console.log("Starting...")
+    console.time('someFunction');
+    console.log((do_work(N, steps)));
+    console.timeEnd('someFunction');
 };
+
 
