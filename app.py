@@ -8,9 +8,21 @@ import threading
 import six
 from threading import Timer
 
+from flask import make_response
+from functools import wraps, update_wrapper
+from datetime import datetime
+
 emailRegexp = re.compile("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
 
 ALLOWED_EXTENSIONS = set(['txt'])
+
+linodeHost = "198.74.58.111"
+linodePort = 80
+
+debugHost = "localhost"
+debugPort = 8000
+
+debug = True
 
 app = Flask(__name__)
 app.config.update(
@@ -192,4 +204,7 @@ def logout():
 
 
 if __name__ == "__main__":
-   app.run(host='0.0.0.0', port=80, threaded=True)
+    if debug:
+        app.run(host='0.0.0.0', port = debugPort, threaded=True)
+    else:
+        app.run(host='0.0.0.0', port = linodePort, threaded=True)
