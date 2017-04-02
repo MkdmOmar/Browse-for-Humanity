@@ -1,6 +1,9 @@
 from flask import Flask, redirect, url_for, render_template, request, session, flash
-import os
+import os, re
 from functools import wraps
+
+emailRegexp = re.compile("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
+
 
 app = Flask(__name__)
 app.config.update(
@@ -32,9 +35,9 @@ def login():
 @app.route('/checkLogin', methods = ['POST', 'GET'])
 def checkLogin():
     if request.method == 'POST':
-        if request.form['username'] == 'admin' and request.form['password'] == 'password':
+        if emailRegexp.match(request.form['email']) and request.form['password'] == 'password':
             session['logged_in'] = True
-            flash("You were successfully logged in!")
+            flash(request.form['email'] + ", you were successfully logged in!")
             return redirect(url_for('createJob'))
         else:
             return render_template('login.html', error = 'Invalid credentials. Please try again!')
