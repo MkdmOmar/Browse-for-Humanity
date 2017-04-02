@@ -6,15 +6,16 @@
   @import url(font-awesome.min.css);
   @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300italic,600,600italic");
 
-    html {
+    body {
       font-family: "Source Sans Pro", Helvetica, sans-serif;
       color: #242943;
+      font-size: 16px;
+      width: 250px;
     }
     
     #wrapper {
-      height: 40%;
       display: block;
-      padding: 1em 0.5em 1em 0.5em;
+      padding: 1em 1em 0em 1em;
     }
     #menu-items {
       font: inherit;
@@ -22,7 +23,17 @@
     }
 
     #realinfo {
-      background-color: : 
+      background-color: whitesmoke;
+      padding: 1em 1em 1em 1em;
+    }
+
+    .button {
+      text-align: center;
+      padding: 0.5em 0 0.5em 0;
+    }
+    .button:hover {
+      background: #242943;
+      color: #ffffff;
     }
   </style>
 </head>
@@ -38,11 +49,8 @@
         <br> Houses:
         <br> Medicines: 
       </div>
-      <div id="seperator"></div>
       <div class="button">Pause</div>
-      <div id="seperator"></div>
       <div class="button">About</div>
-      <div id="seperator"></div>
       <div class="button">Donate</div>
     </div>
   </div>
