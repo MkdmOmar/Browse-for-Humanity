@@ -23,18 +23,28 @@
 
 <body>
 
+	<div id="wrapper">
+
+             <!-- Header -->
+                    <header id="header" class="alt">
+                        <a href="index.html" class="logo"><strong>Browse</strong> <span>for Humanity</span></a>
+                        <nav>
+                            <a href="/logout">Logout</a>
+                        </nav>
+                    </header>
+
 	<!-- messages -->
 	{% for message in get_flashed_messages() %}
-	<h6>{{ message }}</h6>
+	<h5>{{ message }}</h5>
 	{% endfor %}
-	<p>Click <a href="/logout">here</a> to logout.</p>
 
 	<p hidden id="pEmail" name>{{ email }}</p>
 
 	<div class="col-lg-1"></div>
 	<form class="col-lg-9" id="submitJob" method="POST" enctype="multipart/form-data" action="{{ formAddress }}">
-		<h1 class="display-4">Distributed Task Code</h1>
-
+		<header class="major">
+			<h2>Distributed Task's Code</h2>
+			</header>
 		<div id="editor">
 // Sample function
 function square(num) {return num * num;}
@@ -43,37 +53,41 @@ function square(num) {return num * num;}
 			<!-- <div class="form-group">
 				<textarea name="typedCode" class="form-control" rows="3" placeholder="Paste your javascript here"></textarea>
 			</div> -->
-
+			<br>
 		<div class="form-group">
 	    	<label for="exampleInputFile">File input</label>
 	    	<input name="fileCode" type="file" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
-	    	<small id="fileHelp" class="form-text text-muted">Insert a function that executes the task in a distributed fashion.</small>
+	    	<small id="fileHelp" class="form-text text-muted"> Insert a function that executes the task in a distributed fashion</small>
 	  	</div>
 
 		<hr>
-		<div id="jobs_field"> <!-- div for jobs -->
+		<div id="jobs_field"> <!-- div for jobs --> 
 			<div id="selectedJobs"></div>
 			</div>
-			<div class="form-group">
-	    		<h1 class="display-4" style="float:left; padding-right: 20px">Jobs</h1> <p style="display:none;" id="jsonPopup">Data should be in JSON format corresponding to your getJob function.</p>
+			<header class="major">
+			<h2>Task Distribution</h2>
+			</header>
+			<!--<div class="form-group">
+	    		<p style="display:none;" id="jsonPopup">Data should be in JSON format corresponding to your getJob function.</p>
 	    		<input placeholder="Ex: {i = 100000, j = 100000, A = matrixA, B = matrixB}" class="form-control" id="job_field"/>
-	  		</div>
+	  		</div> 
 	  		<div class="form-group">
-	  			<button href="#" id ="createJob">Create new Job</button>
-	  		</div>
+	  			<ul class="actions vertical">
+										<li><a href="#" class="button fit">Create A New Job</a></li>
+										</ul>
+	  		</div> -->
 	  		<div class="form-group">
 	  			<label for="exampleInputFile">File input</label>
-	    		<input name="tasksFile" type="file" class="form-control-file" id="tasksFile" aria-describedby="fileHelp">
-	    		<small id="fileHelp" class="form-text text-muted">Or submit a file where each 	line is a task with JSON formatted inputs to your function</small>
+	    		<input name="tasksFile" type="file" class="enter" id="tasksFile" aria-describedby="fileHelp">
+	    		<small id="fileHelp" class="form-text text-muted"> Submit a File where each line is a task with JSON formatted inputs to your function</small>
 	    	</div>
 		</div>
+		<hr>
 		<input type="hidden" id="emailInput" name="email" value = "" >
 		<input type="hidden" id="typedCode" name="typedCode" value = "" >
 
-		<div class="col-xs-3"></div>
-		<button class="btn-lg" id="submitJobs" type="submit">Submit</button>
-		<div class="col-xs-3"></div>
-
+		<center><button class="button" id="submitJobs" type="submit">Submit</button></center>
+		<br>
 
 	</form>
 	<div class="col-lg-1"></div>
@@ -97,13 +111,13 @@ function square(num) {return num * num;}
 
 
 
-	<!-- Include Bootstrap CSS -->
-	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	 <!-- Include CSS -->
+    <link rel="stylesheet" type=text/css href="{{ url_for('static', filename='css/main.css') }}" />
 
 	<!-- Include Bootstrap JS -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 	<script src="{{ url_for('static', filename='createJob.js') }}"></script>
-
+</div>
 	</body>
 	</html>
