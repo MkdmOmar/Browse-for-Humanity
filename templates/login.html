@@ -3,6 +3,17 @@
 
 <head>
 	<title>Login</title>
+
+	<style type="text/css" media="screen">
+    form article label {
+      display: block;
+      margin: 5px;
+    }
+    form .submit {
+      margin: 15px 0;
+    }
+  </style>
+
 </head>
 
 <body>
@@ -18,6 +29,8 @@
 
 	<script src="{{ url_for('static', filename='login.js') }}"></script>
 
+
+
 <div id="wrapper">
 	<header id="header" class="alt">
 						<a href="index.html" class="logo"><strong>Browse</strong> <span>for Humanity</span></a>
@@ -26,7 +39,7 @@
 		<form action="{{ formAddress }}" method="POST" role="form" class="form-signin">
 			<h2> <center>Credentials </center></h2>
 			<div class="field half first">
-				<label for="email">Email</label>
+				<label for="email" id="emailAddress">Email</label>
 				<input type="text" name="email" id="email" />
 			</div>
 			<div class="field half">
@@ -34,7 +47,42 @@
 				<input type="text" name="password" id="password" />
 			</div>
 			<hr>
+
+			{% if debug %}
 			<center><input id="submit" name="submit" type="submit" value="Login" class="btn btn-primary"></center>
+			{% endif %}
+
+			{% if not debug %}
+			<center><input
+				id ="checkoutScreen"
+	            type="submit"
+	            value="Login"
+	            data-key="{{key}}"
+	            data-email="example@example.com"
+	            data-image="./static/images/icon128.png"
+	            data-currency="usd"
+	            data-name="Register Your Card"
+	            data-description="Charges incurred on data download"
+	        /></center>
+
+	        <script src="https://checkout.stripe.com/v2/checkout.js"></script>
+	        <script>
+	        $(document).ready(function() {
+	            $(':submit').on('click', function(event) {
+	                event.preventDefault();
+	                var $button = $(this),
+	                    $form = $button.parents('form');
+	                var opts = $.extend({}, $button.data(), {
+	                    token: function(result) {
+	                        $form.append($('<input>').attr({ type: 'hidden', name: 'stripeToken', value: result.id })).submit();
+	                    }
+	                });
+	                StripeCheckout.open(opts);
+	            });
+	        });
+	        </script>
+			{% endif %}
+
 		</form>
 
 		{% if error %}
@@ -47,6 +95,15 @@
 		{% endfor %}
 	</div>
 	</div>
+
+	<script>
+			$(document).ready(function(e) {
+				$("#checkoutScreen").attr("data-email", $("#emailAddress").val())
+				$("#emailAddress").change(function() {
+					$("#checkoutScreen").attr("data-email", $(this).val())
+				})
+			})
+		</script>
 
 </body>
 </html>

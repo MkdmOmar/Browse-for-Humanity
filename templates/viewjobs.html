@@ -19,10 +19,11 @@
     {% for message in get_flashed_messages() %}
     <div>
         <hr>
-        <div class="col-xs-4"></div>
+        <div class="col-xs-3"></div>
         <div>
-        <label>{{ message }}</label>
-        <a class="col-xs-4" href="{{ url_for('download', filename = message) }}">Download File</a>
+        <label class="col-xs-3">Filename: {{ message.filename }}</label>
+        <label>Time Taken: {{ message.time }}</label>
+        <a class="col-xs-4" href="{{ url_for('download', filename = message.filename) }}">Download File</a>
         </div>
         <div class="col-xs-4"></div>
 
