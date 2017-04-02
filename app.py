@@ -61,7 +61,14 @@ jobs = {"0": {
     "out_file_name": "0.json",
     "start_time": int(time.time()),
     "end_time": int(time.time())
-}}
+},
+"1": {
+    "user": "mukadam.omar@gmail.com",
+    "out_file_name": "1.json",
+    "start_time": int(time.time()),
+    "end_time": int(time.time())
+}
+}
 
 class Job:
    def __init__(self, username, task_file, code, job_id, max_time=15):
