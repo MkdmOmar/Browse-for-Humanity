@@ -130,8 +130,13 @@ def login_required(f):
             return redirect(url_for('login'))
     return wrap
 
-# Login page
+# Landing page
 @app.route("/")
+def landing():
+    return render_template('index.html')
+
+# Login page
+@app.route("/login")
 def login():
     formURL = ""
     if debug:
