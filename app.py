@@ -59,6 +59,7 @@ def createJob():
 def accept():
     if request.method == 'POST':
         typedCode = request.form['typedCode']
+        # email = request.form['email']
 
         print request.files
         print("here")
@@ -73,14 +74,23 @@ def accept():
         # tasksFile = request.form['tasksFile']
         # print request.form['codeFile']
         # print request.form['tasksFile']
-        for f in request.files:
-            obj = request.files[f]
-            if obj.filename == '':
-                continue
-            if f:
-                #filename = obj.filename
-                filename = "testUser.txt"
-                obj.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        if request.files['fileCode']:
+            file = request.files['fileCode']
+            filename = "code" + "email" + ".txt"
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        if request.files['tasksFile']:
+            file = request.files['tasksFile']
+            filename = "tasks" + "email" + ".txt"
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        # for f in request.files:
+        #     obj = request.files[f]
+        #     if obj.filename == '':
+        #         continue
+        #     if f:
+        #         #filename = obj.filename
+        #         filename = "testUser.txt"
+        #         obj.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         # if 'file' not in request.files:
         #     #flash('No file part')
@@ -108,7 +118,6 @@ def uploaded_file(filename):
 def logout():
     session.pop('logged_in', None)
     session.pop('userEmail', None)
-    email = ""
     flash("You were just logged out!")
     return redirect(url_for('login'))
 
