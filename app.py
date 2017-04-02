@@ -36,7 +36,7 @@ linodePort = 80
 debugHost = "localhost"
 debugPort = 8000
 
-debug = True
+debug = False
 
 app = Flask(__name__)
 app.config.update(
