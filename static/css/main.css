@@ -1820,6 +1820,12 @@
 		text-align: right;
 	}
 
+
+	input .enter {
+		border: 1px solid white;
+		border-radius: 5px;
+	}
+
 /* Section/Article */
 
 	section.special, article.special {
