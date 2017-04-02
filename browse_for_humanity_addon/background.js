@@ -2,43 +2,14 @@ var SERVER_URL = "http://198.74.58.111";
 var busy = false;
 var on = true;
 
-chrome.extension.onMessage.addListener( function(request,sender,sendResponse)
+chrome.runtime.onMessage.addListener( function(request,sender,sendResponse)
 {
     if( request.type == "ToggleAddon" )
     {
         console.log("Toggling Addon")
         on = !on;
     }
-})
-
-
-// LZW-compress a string
-function lzw_encode(s) {
-    var dict = {};
-    var data = (s + "").split("");
-    var out = [];
-    var currChar;
-    var phrase = data[0];
-    var code = 256;
-    for (var i=1; i<data.length; i++) {
-        currChar=data[i];
-        if (dict[phrase + currChar] != null) {
-            phrase += currChar;
-        }
-        else {
-            out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0));
-            dict[phrase + currChar] = code;
-            code++;
-            phrase=currChar;
-        }
-    }
-    out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0));
-    for (var i=0; i<out.length; i++) {
-        out[i] = String.fromCharCode(out[i]);
-    }
-    return out.join("");
-}
-
+});
 
 
 (function(){
@@ -61,7 +32,7 @@ function lzw_encode(s) {
                     
                     results = eval(task.code);
                     busy = true 
-                    results = lzw_encode(doWork(task.inputs));
+                    results = doWork(task.inputs);
                     console.log(results)
                     
                     var xhr2 = new XMLHttpRequest();
@@ -91,13 +62,5 @@ function lzw_encode(s) {
 })();
 
 
-
-
-function MonteCarlo(N, steps) {
-    console.log("Starting...")
-    console.time('someFunction');
-    console.log((do_work(N, steps)));
-    console.timeEnd('someFunction');
-};
 
 
