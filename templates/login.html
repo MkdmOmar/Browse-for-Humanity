@@ -18,9 +18,8 @@
 
 	<script src="{{ url_for('static', filename='login.js') }}"></script>
 
-
 	<div class="container">
-		<form action="http://198.74.58.111:80/checkLogin" method="POST" role="form" class="form-signin">
+		<form action="http://localhost:8000/checkLogin" method="POST" role="form" class="form-signin">
 			<h2 class="form-signin-heading">Login</h2>
 			<input type="text" class="form-control" name="email" placeholder="Email Address" required="" autofocus="" />
 			<input type="password" class="form-control" name="password" placeholder="Password" required="" />

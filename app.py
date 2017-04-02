@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, render_template, request, session, flash
+from flask import Flask, redirect, url_for, render_template, request, session, flash, send_from_directory
 import os, re
 from functools import wraps
 import os
@@ -8,9 +8,6 @@ import threading
 import six
 from threading import Timer
 
-from flask import make_response
-from functools import wraps, update_wrapper
-from datetime import datetime
 
 emailRegexp = re.compile("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
 
@@ -39,7 +36,14 @@ JOB_PATH = './results'
 job_id_lock = threading.Lock()
 last_job_id = 0
 
-jobs = {}
+jobs = {"1": {
+    "out_file_name" : "1.json",
+    "user": "antony.toron@gmail.com"
+},
+"0": {
+    "out_file_name" : "0.json",
+    "user": "mukadam.omar@gmail.com"
+}}
 
 class Job:
    def __init__(self, username, task_file, code, job_id, max_time=1000):
@@ -136,9 +140,45 @@ def checkLogin():
             flash(request.form['email'] + ", you were successfully logged in!")
             session['userEmail'] = request.form['email']
             print(session['userEmail'])
-            return redirect(url_for('createJob'))
+            return redirect(url_for('dashboard'))
         else:
             return render_template('login.html', error = 'Invalid credentials. Please try again!')
+
+
+# Dashboard
+@app.route("/dashboard")
+@login_required
+def dashboard():
+    print("got to Dashboard!")
+    return render_template('dashboard.html')
+
+
+@app.route('/viewJobs')
+@login_required
+def viewJobs():
+    username = session['userEmail']
+    print username
+    files = []
+
+    print jobs
+    for jobName in jobs:
+        job = jobs[jobName]
+
+        # print job.out_file
+        if job['user'] == username:
+            file = {"username": username,
+            # "file": job["out_file"],
+            "filename": job["out_file_name"]}
+            files.append(file)
+
+    for file in files:
+        flash(file["filename"])
+    return render_template('viewJobs.html')
+
+@app.route('/viewJobs/<filename>')
+@login_required
+def download(filename):
+    return send_from_directory(JOB_PATH, filename)
 
 
 # Create a job to be run on workers
@@ -186,11 +226,6 @@ def accept():
 
     return redirect(url_for('createJob'))
 
-
-@app.route('/uploads/<filename>')
-@login_required
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 # Logout of session

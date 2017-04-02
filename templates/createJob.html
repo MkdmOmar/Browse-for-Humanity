@@ -5,6 +5,20 @@
 	<title>CreateJob</title>
 	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 <meta content="utf-8" http-equiv="encoding">
+
+<script src="{{ url_for('static', filename='ace-min-noconflict/ace.js') }}" type="text/javascript" charset="utf-8"></script>
+
+<style type="text/css" media="screen">
+    #editor {
+        position: relative;
+				width: 100%;
+				margin: 0 auto;
+				height: 300px;
+				transition: height .5s;
+				-webkit-transition: height .5s;
+    }
+</style>
+
 </head>
 
 <body>
@@ -17,26 +31,33 @@
 
 	<p hidden id="pEmail" name>{{ email }}</p>
 
-	<div class="col-lg-4"></div>
-	<form class="col-lg-4" id="submitJob" method="POST" enctype="multipart/form-data" action="http://198.74.58.111:80/accept">
+
+	<!-- <div id="editor">function foo(items) {
+	    var x = "All this is syntax highlighted";
+	    return x;
+	}</div> -->
+
+
+
+	<div class="col-lg-1"></div>
+	<form class="col-lg-9" id="submitJob" method="POST" enctype="multipart/form-data" action="http://localhost:8000/accept">
 		<h1 class="display-4">Distributed Task Code</h1>
-		<div class="form-group">
-			<textarea name="typedCode" class="form-control" rows="3" placeholder="Paste your javascript here"></textarea>
-		</div>
+
+		<div id="editor">
+// Sample function
+function square(num) {return num * num;}
+			</div>
+
+			<div class="form-group">
+				<textarea name="typedCode" class="form-control" rows="3" placeholder="Paste your javascript here"></textarea>
+			</div>
+
 		<div class="form-group">
 	    	<label for="exampleInputFile">File input</label>
 	    	<input name="fileCode" type="file" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
 	    	<small id="fileHelp" class="form-text text-muted">Insert a function that executes the task in a distributed fashion.</small>
 	  	</div>
-		<!-- <hr>
-		<h1 class="display-4">Assign Task Code</h1>
-		<textarea name="getJob" class="form-control" rows="3" placeholder="Ex: getJob(i, j, A, B)"></textarea>
-		<div class="form-group">
-	    	<label for="exampleInputFile">File input</label>
-	    	<input type="file" class="form-control-file" id="exampleInputFile" aria-describedby="fileHelp">
-	    	<small id="fileHelp" class="form-text text-muted">Insert a function that assigns a job according to your distributed task.</small>
-	  	</div> -->
-		<!-- allow copying of tasks but with increasing /decreasing bounds for convenience -->
+
 		<hr>
 		<div id="jobs_field"> <!-- div for jobs -->
 			<div id="selectedJobs"></div>
@@ -62,7 +83,14 @@
 		<!-- <h1 class="display-4">Schedule Jobs (Params for Tasks)</h1>
 		<input type="text" placeholder="Ex: {i = 100000, j = 100000, A = matrixA, B = matrixB}"></form> -->
 	</form>
-	<div class="col-lg-4"></div>
+	<div class="col-lg-1"></div>
+
+<script>
+		var editor = ace.edit("editor");
+		editor.setTheme("ace/theme/monokai");
+		editor.getSession().setMode("ace/mode/javascript");
+		editor.resize()
+</script>
 
 	<!-- Include JQuery -->
 	<script
