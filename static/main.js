@@ -35,6 +35,8 @@ $(document).ready(function(e) {
 
 	$('#tasksFile').on('change', prepareUpload);
 
+  $('#emailInput').val($("#pEmail").text())
+
 	function prepareUpload(event) {
 		tasksFile = event.target.files
 	}

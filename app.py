@@ -39,6 +39,8 @@ def checkLogin():
         if emailRegexp.match(request.form['email']) and request.form['password'] == 'password':
             session['logged_in'] = True
             flash(request.form['email'] + ", you were successfully logged in!")
+            session['userEmail'] = request.form['email']
+            print(session['userEmail'])
             return redirect(url_for('createJob'))
         else:
             return render_template('login.html', error = 'Invalid credentials. Please try again!')
@@ -48,7 +50,7 @@ def checkLogin():
 @app.route("/createJob")
 @login_required
 def createJob():
-    return render_template('createJob.html')
+    return render_template('createJob.html', email = session['userEmail'])
 
 
 
@@ -105,6 +107,8 @@ def uploaded_file(filename):
 @login_required
 def logout():
     session.pop('logged_in', None)
+    session.pop('userEmail', None)
+    email = ""
     flash("You were just logged out!")
     return redirect(url_for('login'))
 

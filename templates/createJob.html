@@ -15,6 +15,8 @@
 	{% endfor %}
 	<p>Click <a href="/logout">here</a> to logout.</p>
 
+	<p hidden id="pEmail" name>{{ email }}</p>
+
 	<div class="col-lg-4"></div>
 	<form class="col-lg-4" id="submitJob" method="POST" enctype="multipart/form-data" action="http://localhost:5000/accept">
 		<h1 class="display-4">Distributed Task Code</h1>
@@ -52,7 +54,7 @@
 	    		<small id="fileHelp" class="form-text text-muted">Or submit a file where each 	line is a task with JSON formatted inputs to your function</small>
 	    	</div>
 		</div>
-		<input type="hidden" name="email" value="om@princeton.edu">
+		<input type="hidden" id="emailInput" value = "" >
 		<div class="col-xs-3"></div>
 		<button class="btn-lg" id="submitJobs" type="submit">Submit</button>
 		<div class="col-xs-3"></div>

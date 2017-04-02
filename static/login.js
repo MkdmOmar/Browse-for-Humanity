@@ -5,6 +5,4 @@ $(document).ready(function(e) {
 		// login to flask
 
 	});
-
-
 });
