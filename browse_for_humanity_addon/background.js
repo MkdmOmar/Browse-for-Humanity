@@ -1,5 +1,17 @@
 var SERVER_URL = "http://198.74.58.111";
 var busy = false;
+var on = true;
+
+chrome.extension.onMessage.addListener( function(request,sender,sendResponse)
+{
+    if( request.type == "ToggleAddon" )
+    {
+        console.log("Toggling Addon")
+        on = !on;
+    }
+})
+
+
 // LZW-compress a string
 function lzw_encode(s) {
     var dict = {};
@@ -30,7 +42,7 @@ function lzw_encode(s) {
 
 
 (function(){
-   if (!busy) {
+   if (!busy && on) {
         
     	var xhr = new XMLHttpRequest();
     	console.log("sending getjob request")
