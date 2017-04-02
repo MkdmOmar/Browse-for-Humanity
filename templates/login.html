@@ -10,19 +10,29 @@
 	<!-- Include JQuery -->
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 
-	<!-- Include Bootstrap CSS -->
-	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- Include CSS -->
+	<link rel="stylesheet" type=text/css href="{{ url_for('static', filename='css/main.css') }}" />
 
 	<!-- Include Bootstrap JS -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 	<script src="{{ url_for('static', filename='login.js') }}"></script>
 
+<div id="wrapper">
+	<header id="header" class="alt">
+						<a href="index.html" class="logo"><strong>Browse</strong> <span>for Humanity</span></a>
+					</header>
 	<div class="container">
 		<form action="{{ formAddress }}" method="POST" role="form" class="form-signin">
-			<h2 class="form-signin-heading">Login</h2>
-			<input type="text" class="form-control" name="email" placeholder="Email Address" required="" autofocus="" />
-			<input type="password" class="form-control" name="password" placeholder="Password" required="" />
+			<h2> <center>Credentials </center></h2>
+			<div class="field half">
+				<label for="email">Email</label>
+				<input type="text" name="email" id="email" />
+			</div>
+			<div class="field half">
+				<label for="email">Password</label>
+				<input type="text" name="password" id="password" />
+			</div>
 			<hr>
 			<input id="submit" name="submit" type="submit" value="Login" class="btn btn-primary">
 		</form>
@@ -35,6 +45,7 @@
 		{% for message in get_flashed_messages() %}
 		{{ message }}
 		{% endfor %}
+	</div>
 	</div>
 
 </body>
