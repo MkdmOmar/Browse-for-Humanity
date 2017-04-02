@@ -133,7 +133,12 @@ def login_required(f):
 # Login page
 @app.route("/")
 def login():
-    return render_template('login.html', error = None)
+    formURL = ""
+    if debug:
+        formURL = "http://" + str(debugHost) + ":" + str(debugPort) + "/checkLogin"
+    else:
+        formURL = "http://" + str(linodeHost) + ":" + str(linodePort) + "/checkLogin"
+    return render_template('login.html', error = None, formAddress = formURL)
 
 # If login success route to index.html. Else, return to login page with error message.
 @app.route('/checkLogin', methods = ['POST', 'GET'])
@@ -188,14 +193,12 @@ def download(filename):
 @app.route("/createJob")
 @login_required
 def createJob():
-    # formURL = ""
-    # if debug:
-    #     formURL = "http://" + debugHost + ":" + debugPort + "/accept"
-    # else:
-    #     formURL = "http://" + linodeHost + ":" + linodePort + "/accept"
-
-    # return render_template('createJob.html', email = session['userEmail'], formAddress = formURL)
-    return render_template('createJob.html', email = session['userEmail'])
+    formURL = ""
+    if debug:
+        formURL = "http://" + str(debugHost) + ":" + str(debugPort) + "/accept"
+    else:
+        formURL = "http://" + str(linodeHost) + ":" + str(linodePort) + "/accept"
+    return render_template('createJob.html', email = session['userEmail'], formAddress = formURL)
 
 
 @app.route("/accept", methods = ['POST', 'GET'])
@@ -252,4 +255,4 @@ if __name__ == "__main__":
     if debug:
         app.run(host='0.0.0.0', port = debugPort, threaded=True)
     else:
-        app.run(host='0.0.0.0', port = linodePort, threaded=True)
+        app.run(host='0.0.0.0', port = 8000, threaded=True)
