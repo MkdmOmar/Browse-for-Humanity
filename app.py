@@ -188,6 +188,13 @@ def download(filename):
 @app.route("/createJob")
 @login_required
 def createJob():
+    # formURL = ""
+    # if debug:
+    #     formURL = "http://" + debugHost + ":" + debugPort + "/accept"
+    # else:
+    #     formURL = "http://" + linodeHost + ":" + linodePort + "/accept"
+
+    # return render_template('createJob.html', email = session['userEmail'], formAddress = formURL)
     return render_template('createJob.html', email = session['userEmail'])
 
 

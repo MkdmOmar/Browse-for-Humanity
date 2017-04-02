@@ -37,13 +37,6 @@ $(document).ready(function(e) {
 
   $('#emailInput').val($("#pEmail").text())
 
-	$('#typedCode').val(editor.getValue())
-
-// 	$( "#editor" ).change(function() {
-//   alert( "Handler for .change() called." );
-// });
-
-
 
 
 	function prepareUpload(event) {
@@ -89,8 +82,5 @@ $(document).ready(function(e) {
 		}
 		return true;
 	}
-
-
-
 
 });
