@@ -3,17 +3,30 @@
 from flask import Flask, redirect, url_for, render_template, request, session, flash, send_from_directory
 import os, re
 from functools import wraps
-import os
-import json
+import os, json, threading, six, stripe, time
 from werkzeug.utils import secure_filename
-import threading
-import six
 from threading import Timer
-import time
 import logging
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
+# PUBLISHABLE_KEY= "pk_test_6pRNASCoBOKtIshFeQd4XMUh"
+# SECRET_KEY=sk_test_BQokikJOvBiI2HlWgH4olfQ2 python app.py
+
+PUBLISHABLE_KEY= "pk_test_6pRNASCoBOKtIshFeQd4XMUh"
+SECRET_KEY= "sk_test_BQokikJOvBiI2HlWgH4olfQ2"
+
+stripe_keys = {
+  # 'secret_key': os.environ['SECRET_KEY'],
+  # 'publishable_key': os.environ['PUBLISHABLE_KEY']
+
+    'secret_key': SECRET_KEY,
+    'publishable_key': PUBLISHABLE_KEY
+}
+
+stripe.api_key = stripe_keys['secret_key']
+
+customer = ""
 
 emailRegexp = re.compile("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
 
@@ -25,7 +38,7 @@ linodePort = 80
 debugHost = "localhost"
 debugPort = 8000
 
-debug = False
+debug = True
 
 app = Flask(__name__)
 app.config.update(
@@ -43,7 +56,21 @@ dispatch_lock = threading.Lock()
 job_id_lock = threading.Lock()
 last_job_id = 0
 
-jobs = {}
+# jobs = {}
+
+jobs = {"0": {
+    "user": "mukadam.omar@gmail.com",
+    "out_file_name": "0.json",
+    "start_time": int(time.time()),
+    "end_time": int(time.time())
+},
+"1": {
+    "user": "mukadam.omar@gmail.com",
+    "out_file_name": "1.json",
+    "start_time": int(time.time()),
+    "end_time": int(time.time())
+}
+}
 
 class Job:
    def __init__(self, username, task_file, code, job_id, max_time=15):
@@ -132,22 +159,44 @@ def login_required(f):
             return redirect(url_for('login'))
     return wrap
 
-# Login page
+# Landing page
 @app.route("/")
+def landing():
+    return render_template('index.html')
+
+# Login page
+@app.route("/login")
 def login():
-    return render_template('login.html', error = None)
+    formURL = ""
+    if debug:
+        formURL = "http://" + str(debugHost) + ":" + str(debugPort) + "/checkLogin"
+    else:
+        formURL = "http://" + str(linodeHost) + ":" + str(linodePort) + "/checkLogin"
+    return render_template('login.html', error = None, formAddress = formURL, key=stripe_keys['publishable_key'], debug= debug)
 
 # If login success route to index.html. Else, return to login page with error message.
 @app.route('/checkLogin', methods = ['POST', 'GET'])
 def checkLogin():
     if request.method == 'POST':
         if emailRegexp.match(request.form['email']) and request.form['password'] == 'password':
+            amount = 500
+            global customer
+            if debug == True:
+                customer = ""
+            else:
+                customer = stripe.Customer.create(
+                    email= request.form['email'],
+                    source=request.form['stripeToken']
+                )
+            print customer
+
             session['logged_in'] = True
             flash(request.form['email'] + ", you were successfully logged in!")
             session['userEmail'] = request.form['email']
             return redirect(url_for('dashboard'))
         else:
             return render_template('login.html', error = 'Invalid credentials. Please try again!')
+
 
 
 # Dashboard
@@ -169,20 +218,36 @@ def viewJobs():
     for jobName in jobs:
         job = jobs[jobName]
 
+        timediff = job["end_time"] - job["start_time"]
         # print job.out_file
         if job['user'] == username:
             file = {"username": username,
             # "file": job["out_file"],
-            "filename": job["out_file_name"]}
+            "filename": job["out_file_name"],
+            "time" : timediff}
             files.append(file)
 
     for file in files:
-        flash(file["filename"])
+            obj = {
+                "filename": file["filename"],
+                "time": file["time"]
+            }
+            flash(obj)
     return render_template('viewJobs.html')
 
 @app.route('/viewJobs/<filename>')
 @login_required
 def download(filename):
+
+    if (debug == False):
+        amount = 500
+        charge = stripe.Charge.create(
+            customer=customer.id,
+            amount=amount,
+            currency='usd',
+            description='Flask Charge'
+        )
+        print(charge)
     return send_from_directory(JOB_PATH, filename)
 
 
@@ -190,7 +255,12 @@ def download(filename):
 @app.route("/createJob")
 @login_required
 def createJob():
-    return render_template('createJob.html', email = session['userEmail'])
+    formURL = ""
+    if debug:
+        formURL = "http://" + str(debugHost) + ":" + str(debugPort) + "/accept"
+    else:
+        formURL = "http://" + str(linodeHost) + ":" + str(linodePort) + "/accept"
+    return render_template('createJob.html', email = session['userEmail'], formAddress = formURL)
 
 
 @app.route("/accept", methods = ['POST', 'GET'])
@@ -240,11 +310,11 @@ def logout():
     session.pop('logged_in', None)
     session.pop('userEmail', None)
     flash("You were just logged out!")
-    return redirect(url_for('login'))
+    return redirect(url_for('landing'))
 
 
 if __name__ == "__main__":
     if debug:
         app.run(host='0.0.0.0', port = debugPort, threaded=True)
     else:
-        app.run(host='0.0.0.0', port = linodePort, threaded=True)
+        app.run(host='0.0.0.0', port = 8000, threaded=True)
