@@ -48,9 +48,9 @@
 function square(num) {return num * num;}
 			</div>
 
-			<div class="form-group">
+			<!-- <div class="form-group">
 				<textarea name="typedCode" class="form-control" rows="3" placeholder="Paste your javascript here"></textarea>
-			</div>
+			</div> -->
 
 		<div class="form-group">
 	    	<label for="exampleInputFile">File input</label>
@@ -76,12 +76,13 @@ function square(num) {return num * num;}
 	    	</div>
 		</div>
 		<input type="hidden" id="emailInput" name="email" value = "" >
+		<input type="hidden" id="typedCode" name="typedCode" value = "" >
+
 		<div class="col-xs-3"></div>
 		<button class="btn-lg" id="submitJobs" type="submit">Submit</button>
 		<div class="col-xs-3"></div>
 
-		<!-- <h1 class="display-4">Schedule Jobs (Params for Tasks)</h1>
-		<input type="text" placeholder="Ex: {i = 100000, j = 100000, A = matrixA, B = matrixB}"></form> -->
+
 	</form>
 	<div class="col-lg-1"></div>
 
@@ -89,7 +90,10 @@ function square(num) {return num * num;}
 		var editor = ace.edit("editor");
 		editor.setTheme("ace/theme/monokai");
 		editor.getSession().setMode("ace/mode/javascript");
-		editor.resize()
+		editor.getSession().on('change', function(e) {
+			  $('#typedCode').val(editor.getValue())
+				console.log(editor.getValue());
+		});
 </script>
 
 	<!-- Include JQuery -->
@@ -104,7 +108,7 @@ function square(num) {return num * num;}
 	<!-- Include Bootstrap JS -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-	<script src="{{ url_for('static', filename='main.js') }}"></script>
+	<script src="{{ url_for('static', filename='createJob.js') }}"></script>
 
 	</body>
 	</html>
