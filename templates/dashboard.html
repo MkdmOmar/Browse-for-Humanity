@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CreateJob</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+</head>
+
+<body>
+
+    <!-- messages -->
+    {% for message in get_flashed_messages() %}
+    <h6>{{ message }}</h6>
+    {% endfor %}
+    <p>Click <a href="/logout">here</a> to logout.</p>
+
+    <p hidden id="pEmail" name>{{ email }}</p>
+
+    <div class="col-xs-4"></div>
+    <div class="container-fluid col-xs-4">
+        <h1 class="display-4">Dashboard</h1>
+        <a href="{{ url_for('viewJobs') }}">View my jobs</a>
+        <a href="{{ url_for('createJob') }}">Create a job</a>
+    </div>
+    <div class="col-xs-4"></div>
+
+
+    <!-- Include JQuery -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
+
+    <!-- Include Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+
+    </body>
+    </html>
