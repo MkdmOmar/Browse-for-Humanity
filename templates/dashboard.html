@@ -9,22 +9,51 @@
 
 <body>
 
-    <!-- messages -->
+<div id="wrapper">
+
+             <!-- Header -->
+                    <header id="header" class="alt">
+                        <a href="index.html" class="logo"><strong>Browse</strong> <span>for Humanity</span></a>
+                        <nav>
+                            <a href="/logout">Logout</a>
+                        </nav>
+                    </header>
+
+        <div id="main">
+
+                        <!-- One -->
+                            <section id="one" class="tiles">
+                                <article>
+                                    <span class="image">
+                                        <img src="images/pic07.jpg" alt="" />
+                                    </span>
+                                    <header class="major">
+                                        <ul class="actions vertical">
+                                        <a href="{{ url_for('createJob') }}" class="button fit">Create Jobs</a>
+                                        </ul>
+                                        <p> Experience the power</p>
+                                    </header>
+                                </article>
+                                <article>
+                                    <span class="image">
+                                        <img src="images/pic06.jpg" alt="" />
+                                    </span>
+                                    <header class="major">
+                                        <ul class="actions vertical">
+                                        <a href="{{ url_for('viewJobs') }}" class="button fit">View Jobs</a>
+                                        </ul>
+                                        <p> View Current and Pending Jobs</p>
+                                    </header>
+                                </article>
+                                
+                            </section>
+                        </div>
+    <br>
     {% for message in get_flashed_messages() %}
-    <h6>{{ message }}</h6>
+    <center><h4>{{ message }}</h4> </center>
     {% endfor %}
-    <p>Click <a href="/logout">here</a> to logout.</p>
 
     <p hidden id="pEmail" name>{{ email }}</p>
-
-    <div class="col-xs-4"></div>
-    <div class="container-fluid col-xs-4">
-        <h1 class="display-4">Dashboard</h1>
-        <a href="{{ url_for('viewJobs') }}">View my jobs</a>
-        <a href="{{ url_for('createJob') }}">Create a job</a>
-    </div>
-    <div class="col-xs-4"></div>
-
 
     <!-- Include JQuery -->
     <script
@@ -32,13 +61,13 @@
       integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
       crossorigin="anonymous"></script>
 
-    <!-- Include Bootstrap CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Include CSS -->
+    <link rel="stylesheet" type=text/css href="{{ url_for('static', filename='css/main.css') }}" />
 
     <!-- Include Bootstrap JS -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <script src="{{ url_for('static', filename='createJob.js') }}"></script>
-
+    </div>
     </body>
     </html>

@@ -253,7 +253,7 @@ def logout():
     session.pop('logged_in', None)
     session.pop('userEmail', None)
     flash("You were just logged out!")
-    return redirect(url_for('login'))
+    return redirect(url_for('landing'))
 
 
 if __name__ == "__main__":
