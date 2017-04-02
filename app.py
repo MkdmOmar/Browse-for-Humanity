@@ -7,8 +7,9 @@ import os, json, threading, six, stripe, time
 from werkzeug.utils import secure_filename
 from threading import Timer
 import logging
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
+
+#log = logging.getLogger('werkzeug')
+#log.setLevel(logging.ERROR)
 
 # PUBLISHABLE_KEY= "pk_test_6pRNASCoBOKtIshFeQd4XMUh"
 # SECRET_KEY=sk_test_BQokikJOvBiI2HlWgH4olfQ2 python app.py
@@ -32,13 +33,13 @@ emailRegexp = re.compile("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
 
 ALLOWED_EXTENSIONS = set(['txt'])
 
-linodeHost = "198.74.58.111"
+linodeHost = "199.74.58.111"
 linodePort = 80
 
 debugHost = "localhost"
 debugPort = 8000
 
-debug = True
+debug = False
 
 app = Flask(__name__)
 app.config.update(
@@ -56,21 +57,7 @@ dispatch_lock = threading.Lock()
 job_id_lock = threading.Lock()
 last_job_id = 0
 
-# jobs = {}
-
-jobs = {"0": {
-    "user": "mukadam.omar@gmail.com",
-    "out_file_name": "0.json",
-    "start_time": int(time.time()),
-    "end_time": int(time.time())
-},
-"1": {
-    "user": "mukadam.omar@gmail.com",
-    "out_file_name": "1.json",
-    "start_time": int(time.time()),
-    "end_time": int(time.time())
-}
-}
+jobs = {}
 
 class Job:
    def __init__(self, username, task_file, code, job_id, max_time=15):
@@ -317,4 +304,4 @@ if __name__ == "__main__":
     if debug:
         app.run(host='0.0.0.0', port = debugPort, threaded=True)
     else:
-        app.run(host='0.0.0.0', port = 8000, threaded=True)
+        app.run(host='0.0.0.0', port = 80, threaded=True)
