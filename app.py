@@ -7,6 +7,10 @@ from werkzeug.utils import secure_filename
 import threading
 import six
 from threading import Timer
+import time
+import logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 from flask import make_response
 from functools import wraps, update_wrapper
@@ -22,7 +26,7 @@ linodePort = 80
 debugHost = "localhost"
 debugPort = 8000
 
-debug = True
+debug = False
 
 app = Flask(__name__)
 app.config.update(
@@ -36,13 +40,14 @@ app.config.update(
 UPLOAD_FOLDER = './uploads'
 JOB_PATH = './results'
 
+dispatch_lock = threading.Lock()
 job_id_lock = threading.Lock()
 last_job_id = 0
 
 jobs = {}
 
 class Job:
-   def __init__(self, username, task_file, code, job_id, max_time=1000):
+   def __init__(self, username, task_file, code, job_id, max_time=15):
          self.result_lock = threading.Lock()
          self.queue_lock = threading.Lock()
 
@@ -54,6 +59,8 @@ class Job:
          self.scheduled_tasks = {}
          self.out_file_name = os.path.join(JOB_PATH, '{}.json'.format(last_job_id))
          self.out_file = open(self.out_file_name, 'wb')
+         self.start_time = int(time.time())
+         self.end_time = None
 
          params = []
          with open(task_file, 'rb') as f:
@@ -74,34 +81,38 @@ class Job:
       return len(self.scheduled_tasks) + len(self.tasks_to_do) == 0;
 
 def write_result(job_id, task_id, result):
-     job_info  = jobs[job_id]
-     #wait on semaphore
-     with job_info.result_lock:
-         print task_id,  " In scheduled tasks?"
-         if task_id in job_info.scheduled_tasks:
-             print "yes ", result
-             json.dump((job_info.scheduled_tasks[task_id], result), job_info.out_file)
-             job_info.out_file.write('\n')
-             del job_info.scheduled_tasks[task_id];
-             if (job_info.is_done()):
-                 print job_id, " done!"
-                 job_info.out_file.close()
-     #release semaphore
+     if job_id in jobs:
+         job_info  = jobs[job_id]
+         #wait on semaphore
+         with job_info.result_lock:
+             print "result for taks {} came back!".format(task_id)
+             if task_id in job_info.scheduled_tasks:
+
+                 json.dump((job_info.scheduled_tasks[task_id], result), job_info.out_file)
+                 job_info.out_file.write('\n')
+                 del job_info.scheduled_tasks[task_id];
+
+                 if (job_info.is_done()):
+                     job_info.end_time = int(time.time())
+                     print "Job {} done in {} secs!".format(job_id, job_info.end_time - job_info.start_time)
+                     job_info.out_file.close()
+         #release semaphore
 
 @app.route('/get_job')
 def get_job():
-     for job_id, job in six.iteritems(jobs):
-         if len(job.tasks_to_do) > 0:
-             task_id, params = job.tasks_to_do.popitem()
-             job.scheduled_tasks[task_id] = params
-             Timer(job.max_time, job.check_task, kwargs={'task_id': task_id}).start()
-             return json.dumps({"job_id": job_id,
-                                "task_id": task_id,
-                                "params": params,
-                                "code": job.code})
+     with dispatch_lock:
+         for job_id, job in six.iteritems(jobs):
+             if len(job.tasks_to_do) > 0:
+                 task_id, params = job.tasks_to_do.popitem()
+                 print "Popped task {}!".format(task_id)
+                 job.scheduled_tasks[task_id] = params
+                 Timer(job.max_time, job.check_task, kwargs={'task_id': task_id}).start()
+                 return json.dumps({"job_id": job_id,
+                                    "task_id": task_id,
+                                    "params": params,
+                                    "code": job.code})
 
-     return 'X_X'
-
+         return 'X_X'
 
 @app.route('/submit_result')
 def submit_result():
@@ -135,7 +146,6 @@ def checkLogin():
             session['logged_in'] = True
             flash(request.form['email'] + ", you were successfully logged in!")
             session['userEmail'] = request.form['email']
-            print(session['userEmail'])
             return redirect(url_for('createJob'))
         else:
             return render_template('login.html', error = 'Invalid credentials. Please try again!')
