@@ -59,7 +59,7 @@ def createJob():
 def accept():
     if request.method == 'POST':
         typedCode = request.form['typedCode']
-        # email = request.form['email']
+        email = request.form['email']
 
         print request.files
         print("here")
@@ -76,11 +76,11 @@ def accept():
         # print request.form['tasksFile']
         if request.files['fileCode']:
             file = request.files['fileCode']
-            filename = "code" + "email" + ".txt"
+            filename = "code" + email + ".txt"
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         if request.files['tasksFile']:
             file = request.files['tasksFile']
-            filename = "tasks" + "email" + ".txt"
+            filename = "tasks" + email + ".txt"
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         # for f in request.files:
