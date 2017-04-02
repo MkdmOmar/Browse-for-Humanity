@@ -63,7 +63,6 @@ class Job:
 
 def write_result(job_id, task_id, result):
      job_info  = jobs[job_id]
-     result = lzw_decode(result)
      #wait on semaphore
      with job_info.result_lock:
          print task_id,  " In scheduled tasks?"
@@ -147,9 +146,10 @@ def accept():
         if request.files['fileCode'] and request.files['fileCode'] != '':
             file = request.files['fileCode']
             filename = "code" + email + ".txt"
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            flash("NOT IMPLEMENTED")
-            return redirect(url_for('createJob'))
+            full_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(full_file_path)
+            with open(full_file_path, 'r') as myfile:
+                code = myfile.read()
         elif request.form['typedCode'] and request.form['typedCode'] != '':
             code = request.form['typedCode']
         else:
