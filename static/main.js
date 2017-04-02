@@ -39,35 +39,35 @@ $(document).ready(function(e) {
 		tasksFile = event.target.files
 	}
 
-	$("#submitJobs").click(function(e) {
-		e.preventDefault()
-
-		testData = $("form").serializeArray()
-		// console.log(testData)
-		data = $("form#submitJob").serialize()
-		// console.log(data)
-
-
-		files = {
-			taskFile: tasksFile,
-			codeFile: codeFile
-		}
-
-		// submit to server
-
-		$.ajax({
-			type: 'POST',
-			url: '/accept',
-			data: files,
-			contentType: 'multipart/form-data',
-			processData: false,
-			success: function(data) {
-				console.log("success")
-			}
-		})
-
-
-	})
+	// $("#submitJobs").click(function(e) {
+	// 	e.preventDefault()
+  //
+	// 	testData = $("form").serializeArray()
+	// 	// console.log(testData)
+	// 	data = $("form#submitJob").serialize()
+	// 	// console.log(data)
+  //
+  //
+	// 	files = {
+	// 		taskFile: tasksFile,
+	// 		codeFile: codeFile
+	// 	}
+  //
+	// 	// submit to server
+  //
+	// 	$.ajax({
+	// 		type: 'POST',
+	// 		url: '/accept',
+	// 		data: files,
+	// 		contentType: 'multipart/form-data',
+	// 		processData: false,
+	// 		success: function(data) {
+	// 			console.log("success")
+	// 		}
+	// 	})
+  //
+  //
+	// })
 
 	function isJSON(str) {
 		try {

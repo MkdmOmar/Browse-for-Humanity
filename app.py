@@ -4,13 +4,14 @@ from functools import wraps
 
 emailRegexp = re.compile("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
 
+ALLOWED_EXTENSIONS = set(['txt'])
 
 app = Flask(__name__)
 app.config.update(
     DEBUG=True,
     TEMPLATES_AUTO_RELOAD=True,
     SECRET_KEY = os.urandom(24),  # Secret key for app session
-    UPLOAD_FOLDER = '/upload',
+    UPLOAD_FOLDER = './uploads',
     SEND_FILE_MAX_AGE_DEFAULT = 0
 )
 
@@ -52,30 +53,51 @@ def createJob():
 
 
 @app.route("/accept", methods = ['POST', 'GET'])
+@login_required
 def accept():
-    print("here")
     if request.method == 'POST':
-        print("accepted")
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        if file.filename == '':
-            flash('No seleted file')
-            return redirect(request.url)
-        if file:
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('uploaded_file', filename=filename))
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <p><input type=file name=file>
-         <input type=submit value=Upload>
-    </form>
-    '''
+        typedCode = request.form['typedCode']
+
+        print request.files
+        print("here")
+        # print request.form['typedCode']
+        # print("accepted")
+        # print request.form
+        # for element in request.form:
+        #     print element
+        # print("")
+        # print "!!!!!!",request.form[""]
+        # print request.form['u']
+        # tasksFile = request.form['tasksFile']
+        # print request.form['codeFile']
+        # print request.form['tasksFile']
+        for f in request.files:
+            obj = request.files[f]
+            if obj.filename == '':
+                continue
+            if f:
+                #filename = obj.filename
+                filename = "testUser.txt"
+                obj.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        # if 'file' not in request.files:
+        #     #flash('No file part')
+        #     return redirect(request.url)
+        # file = request.files['tasksFile']
+        # if file.filename == '':
+        #     #flash('No seleted file')
+        #     return redirect(request.url)
+        # if file:
+        #     print("saving")
+        #     filename = secure_filename(file.filename)
+        #     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    return redirect(url_for('createJob'))
+
+
+@app.route('/uploads/<filename>')
+@login_required
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 # Logout of session
