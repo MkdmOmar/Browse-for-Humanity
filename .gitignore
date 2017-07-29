@@ -3,3 +3,6 @@ uploads/*
 
 # exception to the rule
 !uploads/.gitkeep 
+
+*~
+.DS_Store
