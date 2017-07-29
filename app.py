@@ -1,5 +1,5 @@
 #!usr/bin/python
-
+import webbrowser
 from flask import Flask, redirect, url_for, render_template, request, session, flash, send_from_directory
 import os, re
 from functools import wraps
@@ -7,9 +7,8 @@ import os, json, threading, six, stripe, time
 from werkzeug.utils import secure_filename
 from threading import Timer
 import logging
-
-#log = logging.getLogger('werkzeug')
-#log.setLevel(logging.ERROR)
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 # PUBLISHABLE_KEY= "pk_test_6pRNASCoBOKtIshFeQd4XMUh"
 # SECRET_KEY=sk_test_BQokikJOvBiI2HlWgH4olfQ2 python app.py
@@ -31,9 +30,10 @@ customer = ""
 
 emailRegexp = re.compile("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
 
-ALLOWED_EXTENSIONS = set(['txt'])
+ALLOWED_EXTENSIONS = set(['txt', 'js'])
 
-linodeHost = "199.74.58.111"
+#linodeHost = "198.74.58.111"
+linodeHost = "browseforhumanity.com"
 linodePort = 80
 
 debugHost = "localhost"
@@ -70,8 +70,8 @@ class Job:
          self.done = False
          self.tasks_to_do = {}
          self.scheduled_tasks = {}
-         self.out_file_name = os.path.join(JOB_PATH, '{}.json'.format(last_job_id))
-         self.out_file = open(self.out_file_name, 'wb')
+         self.out_file_name = '{}.json'.format(last_job_id)
+         self.out_file = open(os.path.join(JOB_PATH, self.out_file_name), 'wb')
          self.start_time = int(time.time())
          self.end_time = None
 
@@ -88,7 +88,7 @@ class Job:
           if task_id in self.scheduled_tasks:
               self.tasks_to_do[task_id] = self.scheduled_tasks[task_id]
               del self.scheduled_tasks[task_id]
-              print "Task {} returned to the queue...".format(task_id)
+              print "[Task {}] Failed: returning to the dispatch queue".format(task_id)
 
    def is_done(self):
       return len(self.scheduled_tasks) + len(self.tasks_to_do) == 0;
@@ -98,7 +98,7 @@ def write_result(job_id, task_id, result):
          job_info  = jobs[job_id]
          #wait on semaphore
          with job_info.result_lock:
-             print "result for taks {} came back!".format(task_id)
+             print "[Task {}] Results Reported".format(task_id)
              if task_id in job_info.scheduled_tasks:
 
                  json.dump((job_info.scheduled_tasks[task_id], result), job_info.out_file)
@@ -117,7 +117,7 @@ def get_job():
          for job_id, job in six.iteritems(jobs):
              if len(job.tasks_to_do) > 0:
                  task_id, params = job.tasks_to_do.popitem()
-                 print "Popped task {}!".format(task_id)
+                 print "[Task {}] Dispatched".format(task_id)
                  job.scheduled_tasks[task_id] = params
                  Timer(job.max_time, job.check_task, kwargs={'task_id': task_id}).start()
                  return json.dumps({"job_id": job_id,
@@ -164,12 +164,13 @@ def login():
 # If login success route to index.html. Else, return to login page with error message.
 @app.route('/checkLogin', methods = ['POST', 'GET'])
 def checkLogin():
+    print "AFAFDFASAFA"
     if request.method == 'POST':
         if emailRegexp.match(request.form['email']) and request.form['password'] == 'password':
             amount = 500
             global customer
             if debug == True:
-                customer = ""
+                customer = request.form['email'],
             else:
                 customer = stripe.Customer.create(
                     email= request.form['email'],
@@ -190,7 +191,6 @@ def checkLogin():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    print("got to Dashboard!")
     return render_template('dashboard.html')
 
 
@@ -198,19 +198,21 @@ def dashboard():
 @login_required
 def viewJobs():
     username = session['userEmail']
-    print username
     files = []
 
-    print jobs
     for jobName in jobs:
         job = jobs[jobName]
 
-        timediff = job["end_time"] - job["start_time"]
+        if job.user == username:
+            timediff = ''
+            if job.is_done():
+                timediff = job.end_time - job.start_time
+            else:
+                timediff = "Running"
         # print job.out_file
-        if job['user'] == username:
             file = {"username": username,
             # "file": job["out_file"],
-            "filename": job["out_file_name"],
+            "filename": job.out_file_name,
             "time" : timediff}
             files.append(file)
 
@@ -220,13 +222,13 @@ def viewJobs():
                 "time": file["time"]
             }
             flash(obj)
-    return render_template('viewJobs.html')
+    return render_template('viewjobs.html')
 
 @app.route('/viewJobs/<filename>')
 @login_required
 def download(filename):
 
-    if (debug == False):
+    if (debug == True):
         amount = 500
         charge = stripe.Charge.create(
             customer=customer.id,
@@ -234,8 +236,7 @@ def download(filename):
             currency='usd',
             description='Flask Charge'
         )
-        print(charge)
-    return send_from_directory(JOB_PATH, filename)
+    return send_from_directory(JOB_PATH, filename, as_attachment=True)
 
 
 # Create a job to be run on workers
